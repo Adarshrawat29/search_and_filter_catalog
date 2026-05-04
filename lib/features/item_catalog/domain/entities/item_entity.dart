@@ -1,0 +1,13 @@
+class ItemEntity {
+  final int id;
+  final String title;
+  final String description;
+  final String category;
+
+  ItemEntity({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.category,
+  });
+}

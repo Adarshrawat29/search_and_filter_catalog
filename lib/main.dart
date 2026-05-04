@@ -1,27 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:userstory_remote_data_fetching/features/post/presentation/pages/post_page.dart';
-import 'injection/injection_container.dart';
 
+import 'features/item_catalog/data/datasources/item_local_data_source.dart';
+import 'features/item_catalog/data/repositories/item_repository_impl.dart';
+import 'features/item_catalog/domain/usecases/get_items_usecase.dart';
+import 'features/item_catalog/presentation/cubit/item_cubit.dart';
+import 'features/item_catalog/presentation/pages/item_catalog_page.dart';
 
-/// App Entry
-/// AC 11.4: Setup DI before app starts
+void main() {
+  final dataSource = ItemLocalDataSource();
+  final repository = ItemRepositoryImpl(dataSource);
+  final useCase = GetItemsUseCase(repository);
+  final cubit = ItemCubit(useCase);
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  await setupInjection(); 
-  // Initializes all dependencies before app runs
-
-  runApp(const MyApp());
+  runApp(ItemCatalogApp(cubit: cubit));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class ItemCatalogApp extends StatelessWidget {
+  final ItemCubit cubit;
+
+  const ItemCatalogApp({super.key, required this.cubit});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: PostPage(),
+    return MaterialApp(
+      title: 'Item Catalog',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 113, 112, 116)),
+        useMaterial3: true,
+      ),
+      home: ItemPage(cubit: cubit),
     );
   }
 }
